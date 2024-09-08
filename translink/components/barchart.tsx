@@ -1,39 +1,36 @@
 "use client";
-import React from 'react'
-// import { Bar } from 'react-chartjs-2'
-import { getFuelInfo } from '@/services/fuelfetch'
-import { useEffect , useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios'; // Optional, if using axios
 
-const BarChart: React.FC = () => {
+const FuelSettings = () => {
+  const [fuelData, setFuelData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    const [recentFuel, setRecentFuel] = useState<any[]>([]);
-  const [status, setStatus] = useState<"loading" | "success" | "error">(
-    "loading"
-  );
+  useEffect(() => {
+    const fetchFuelSettings = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/fuel-settings');
+        setFuelData(response.data);
+      } catch (err) {
+        setError('Error fetching fuel settings');
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchFuelSettings();
+  }, []);
 
-    useEffect(() => {
-        const fetchRecentTransaction = async () => {
-          setStatus("loading");
-          try {
-            const response = await getFuelInfo();
-            setRecentFuel(response.data.content);
-            setStatus("success");
-            console.log(response.data.content);
-          } catch (error) {
-            console.error("Error fetching the fuel consumption: ", error);
-            setStatus("error");
-          }
-        };
-        fetchRecentTransaction();
-      }, []);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-
     <div>
-      
+      <h1>Fuel Settings</h1>
+      <pre>{JSON.stringify(fuelData, null, 2)}</pre>
     </div>
-  )
-}
+  );
+};
 
-export default BarChart
+export default FuelSettings;
