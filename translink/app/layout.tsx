@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-
+import DashboardHeader from "@/components/navbar";
+import Sidebar from "@/components/sidebar";
+import DateRangeSelector from "@/components/daterange";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -28,7 +30,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex flex-col h-[100vh]"> 
+          <DashboardHeader />
+          <div className="flex">
+            <Sidebar/>
+            <div className="p-[20px]"> {children} </div>
+            
+          </div>
+        </div>
       </body>
     </html>
   );
