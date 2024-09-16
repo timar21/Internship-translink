@@ -34,7 +34,7 @@ export default function RootLayout({
           <DashboardHeader />
           <div className="flex">
             <Sidebar/>
-            <div className="p-[20px]"> {children} </div>
+            <div className="p-[20px] w-screen"> {children} </div>
             
           </div>
         </div>

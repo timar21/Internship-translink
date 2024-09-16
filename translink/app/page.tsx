@@ -5,7 +5,17 @@ export default function Home() {
   return (
     <div>
       <DateRangeSelector />
-      <BarChart/> {/* Use the correct component name */}
+      
+        <div className="flex ">
+          <BarChart />
+          <BarChart/>
+        </div>
+        <div className="flex ">
+          <BarChart />
+          <BarChart/>
+        </div>
+      
+      {/* Use the correct component name */}
     </div>
   );
 }
