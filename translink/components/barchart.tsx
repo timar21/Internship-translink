@@ -1,30 +1,15 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-
+import useFetchFuelSettings from '@/services/fuelfetch';
 
 Chart.register(...registerables);
 
 const ApiDataFetcher: React.FC = () => {
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        'https://hst-api.wialon.com/wialon/ajax.html?svc=unit/get_fuel_settings&params=%7B%22itemId%22%3A19790361%7D&sid=04faf1a407740ebed784a85fe0eb4f1b'
-      );
-      setData(response.data);
-    } catch (error) {
-      setError(`Failed to fetch data: ${error}`);
-    }
-    setLoading(false);
-
-  };
+  const { data, error, loading } = useFetchFuelSettings();
+  
 
   
   const chartData = {
@@ -44,10 +29,15 @@ const ApiDataFetcher: React.FC = () => {
   };
 
   const options = {
-    
+    responsive: true,
+    maintainAspectRatio: false,
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 5,
+        },
       },
     },
   };
@@ -55,13 +45,11 @@ const ApiDataFetcher: React.FC = () => {
 
   return (
     <div className="p-4">
-      <button onClick={fetchData} className="mb-4 p-2 bg-blue-500 text-white rounded">
-        Fetch Fuel Settings
-      </button>
+     
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
       {data && (
-        <div>
+        <div style={{ position: "relative", height: "400px", width: "100%" }}>
           <h2>Fuel Consumption Rates</h2>
           <Bar data={chartData} options={options} />
         </div>

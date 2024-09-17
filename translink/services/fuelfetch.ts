@@ -1,39 +1,69 @@
-import express from 'express';
-import fetch from 'node-fetch';
-import cors from 'cors';
+// useFetchFuelSettings.ts
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const app = express();
-const PORT = 3000;
+const sid = "04c59c0fcb37d02e7b4cd0602f3b469e"; 
+const useFetchFuelSettings = () => {
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-// Use CORS middleware
-app.use(cors());
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.post(
+          `https://hst-api.wialon.com/wialon/ajax.html?svc=unit/get_fuel_settings&params=%7B%22itemId%22%3A27058788%7D&sid=${sid}`
+        );
+        setData(response.data);
+        console.log(response.data)
+      } catch (error) {
+        setError(`Failed to fetch data: ${error}`);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-app.use(express.json()); // For parsing application/json
+    fetchData();
+  }, []);
 
-app.post('/api/fuel-settings', async (req, res) => {
-  console.log('Received request:', req.body);
-  const url = 'https://hst-api.wialon.com/wialon/ajax.html';
-  const params = {
-    sid: req.body.sid, // Pass the session ID from request body
-    svc: 'unit/get_fuel_settings',
-    params: JSON.stringify({ itemId: req.body.itemId }) // Pass itemId from request body
+  return { data, error, loading };
+};
+
+const updateFetchFuelSettings = (
+            // Default to current day
+) => {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const updateFuelSettings = (
+    winterMonthFrom: number = new Date().getMonth() + 1,
+    winterDayFrom: number = new Date().getDate(),
+    winterMonthTo: number = new Date().getMonth() + 1,
+    winterDayTo: number = new Date().getDate()
+  ) => {
+    
+ 
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.post(
+          `https://hst-api.wialon.com/wialon/ajax.html?svc=unit/update_fuel_rates_params&params={"itemId":19790361,"consSummer":10.5,"consWinter":12.0,"winterMonthFrom":${winterMonthFrom},"winterDayFrom":${winterDayFrom},"winterMonthTo":${winterMonthTo},"winterDayTo":${winterDayTo}}&sid=${sid}`
+        );
+        
+      } catch (error) {
+        setError(`Failed to update data: ${error}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  
   };
+  
+ 
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams(params)
-    });
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).send('Error fetching data: ' + error.message);
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+  return {error, loading, updateFuelSettings};
+};
+export default useFetchFuelSettings;
+export { updateFetchFuelSettings };
