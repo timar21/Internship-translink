@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const sid = "04c59c0fcb37d02e7b4cd0602f3b469e"; 
+const sid = "04eb971cb573544de0b01eaf0b8b42bf"; 
 const useFetchFuelSettings = () => {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +31,6 @@ const useFetchFuelSettings = () => {
 };
 
 const updateFetchFuelSettings = (
-            // Default to current day
 ) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
