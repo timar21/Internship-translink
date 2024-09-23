@@ -22,6 +22,7 @@ const LineChartComponent: React.FC<LineChartProps> = ({ data }) => {
     if (!data) {
         return <div>Loading...</div>; // Show loading state while waiting for data
     }
+    console.log(data);
 
     // Prepare data for the chart
     const chartData = data.map(item => ({
